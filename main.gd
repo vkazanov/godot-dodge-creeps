@@ -3,6 +3,11 @@ extends Node
 @export var mob_scene: PackedScene
 var score
 
+func _process(delta: float) -> void:
+	if Input.is_action_pressed("quit_game"):
+		get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+		get_tree().quit()
+
 func game_over():
 	$ScoreTimer.stop()
 	$MobTimer.stop()
