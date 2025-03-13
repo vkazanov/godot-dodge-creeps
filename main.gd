@@ -1,3 +1,4 @@
+## Main class connecting everything.
 extends Node
 
 @export var mob_scene: PackedScene
@@ -6,16 +7,19 @@ var score
 var min_velocity = Global.INIT_MIN_SPEED
 var max_velocity = Global.INIT_MAX_SPEED
 
+
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("quit_game"):
 		get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 		get_tree().quit()
+
 
 func game_over():
 	$ScoreTimer.stop()
 	$MobTimer.stop()
 	$HUD.hide_score()
 	$HUD.show_game_over(score)
+
 
 func new_game():
 	get_tree().call_group("mobs", "queue_free")
@@ -27,6 +31,7 @@ func new_game():
 	$StartTimer.start()
 	$HUD.update_score(score, false)
 	$HUD.show_message("Get Ready")
+
 
 func _on_mob_timer_timeout():
 	# Create a new instance of the Mob scene.
@@ -53,6 +58,7 @@ func _on_mob_timer_timeout():
 	# Spawn the mob by adding it to the Main scene.
 	add_child(mob)
 
+
 func _on_score_timer_timeout():
 	score += 1
 	var is_speedup: bool = score % 5 == 0 and score != 0
@@ -61,6 +67,7 @@ func _on_score_timer_timeout():
 		$MobTimer.wait_time *= Global.MOB_CREATION_SPEEDUP
 
 	$HUD.update_score(score, is_speedup)
+
 
 func _on_start_timer_timeout():
 	$MobTimer.start()
