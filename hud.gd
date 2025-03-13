@@ -6,9 +6,10 @@ signal start_game
 func hide_score():
 	$ScoreLabel.hide()
 
-func show_message(text):
+func show_message(text, time: float = 2.0):
 	$Message.text = text
 	$Message.show()
+	$MessageTimer.wait_time = time
 	$MessageTimer.start()
 
 func show_game_over(score: int):
@@ -26,6 +27,7 @@ func show_game_over(score: int):
 func update_score(score, is_speedup):
 	$ScoreLabel.text = str(score)
 	if is_speedup:
+		show_message("Next level", 1.0)
 		$ScoreLabel.add_theme_color_override("font_color", Global.IMPORTANT_COLOR)
 		$ScoreLabel.add_theme_font_size_override("font_size", Global.IMPORTANT_SIZE)
 	else:
