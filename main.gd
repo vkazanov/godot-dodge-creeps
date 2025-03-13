@@ -3,6 +3,9 @@ extends Node
 @export var mob_scene: PackedScene
 var score
 
+var min_velocity = Global.INIT_MIN_SPEED
+var max_velocity = Global.INIT_MAX_SPEED
+
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("quit_game"):
 		get_tree().root.propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
@@ -15,10 +18,13 @@ func game_over():
 
 func new_game():
 	get_tree().call_group("mobs", "queue_free")
+
 	score = 0
+	$MobTimer.wait_time = Global.MOB_CREATION
+
 	$Player.start($StartPosition.position)
 	$StartTimer.start()
-	$HUD.update_score(score)
+	$HUD.update_score(score, false)
 	$HUD.show_message("Get Ready")
 
 func _on_mob_timer_timeout():
@@ -39,8 +45,8 @@ func _on_mob_timer_timeout():
 	direction += randf_range(-PI / 4, PI / 4)
 	mob.rotation = direction
 
-	# Choose the velocity for the mob.
-	var velocity = Vector2(randf_range(150.0, 250.0), 0.0)
+	# Choose the velocity
+	var velocity = Vector2(randf_range(min_velocity, max_velocity), 0.0)
 	mob.linear_velocity = velocity.rotated(direction)
 
 	# Spawn the mob by adding it to the Main scene.
@@ -48,7 +54,12 @@ func _on_mob_timer_timeout():
 
 func _on_score_timer_timeout():
 	score += 1
-	$HUD.update_score(score)
+	var is_speedup: bool = score % 5 == 0 and score != 0
+	if is_speedup:
+		max_velocity *= Global.SPEEDUP
+		$MobTimer.wait_time *= Global.MOB_CREATION_SPEEDUP
+
+	$HUD.update_score(score, is_speedup)
 
 func _on_start_timer_timeout():
 	$MobTimer.start()
