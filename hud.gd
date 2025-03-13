@@ -5,7 +5,7 @@ signal start_game
 
 const DEFAULT_COLOR: Color = Color.WHITE
 const DEFAULT_SIZE: int = 64
-const IMPORTANT_COLOR: Color = Color.RED
+const IMPORTANT_COLOR: Color = Color.GREEN
 const IMPORTANT_SIZE: int = 96
 
 func show_message(text):
